@@ -412,3 +412,33 @@ process.on('SIGINT', () => {
     process.exit(0);
   });
 });
+
+
+// -------------------------------------------------------------
+// CRASH-PREVENTION & RENDER 24/7 KEEP-ALIVE SYSTEM
+// -------------------------------------------------------------
+
+// 1. Prevent unexpected Node process exits from unhandled errors
+process.on('uncaughtException', (err) => {
+  console.error('🛡️ Process Guard - Uncaught Exception:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🛡️ Process Guard - Unhandled Promise Rejection at:', promise, 'reason:', reason);
+});
+
+// 2. Automatic Keep-Alive Self-Pinger (Keeps Render Free Tier 24/7 Awake)
+const APP_URL = process.env.RENDER_EXTERNAL_URL || process.env.APP_URL;
+if (APP_URL) {
+  const PING_INTERVAL_MS = 12 * 60 * 1000; // Ping every 12 mins (Render sleeps after 15 mins)
+  setInterval(async () => {
+    try {
+      const pingUrl = APP_URL.endsWith('/') ? `${APP_URL}health` : `${APP_URL}/health`;
+      const res = await fetch(pingUrl);
+      console.log(`[Keep-Alive] Pinged ${pingUrl} (HTTP ${res.status}) at ${new Date().toLocaleTimeString()}`);
+    } catch (err) {
+      console.warn(`[Keep-Alive] Ping warning:`, err.message);
+    }
+  }, PING_INTERVAL_MS);
+  console.log(`⏱️ Render Keep-Alive Active: Pinging ${APP_URL} every 12 minutes to prevent sleep.`);
+}
