@@ -2567,14 +2567,55 @@
 
 
 
-          <!-- Name -->
-
+          <!-- 1. Name Options: First Name, Middle Name, Last Name -->
           <div class="input-card">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;">
+              <div>
+                <label><span id="lbl-first-name">First Name</span> <span class="req">*</span></label>
+                <input type="text" id="firstName" class="form-input" placeholder="First Name" required oninput="updateCalculatedFullName()">
+              </div>
+              <div>
+                <label><span id="lbl-middle-name">Middle Name</span></label>
+                <input type="text" id="middleName" class="form-input" placeholder="Middle Name" oninput="updateCalculatedFullName()">
+              </div>
+              <div>
+                <label><span id="lbl-last-name">Last Name</span> <span class="req">*</span></label>
+                <input type="text" id="lastName" class="form-input" placeholder="Last Name" required oninput="updateCalculatedFullName()">
+              </div>
+            </div>
+            <!-- Auto-computed Full Name for backward compatibility & ID cards -->
+            <input type="hidden" id="fullName" name="fullName">
+          </div>
 
-            <label><span id="lbl-name">Name</span> <span class="req">*</span></label>
-
-            <input type="text" id="fullName" class="form-input" placeholder="Full Name" required>
-
+          <!-- 2. Gotra (गोत्र) Dropdown Selection (20 Options) -->
+          <div class="input-card">
+            <label><span id="lbl-gotra">Gotra / गोत्र</span> <span class="req">*</span></label>
+            <select id="gotra" class="form-input form-select" required onchange="handleGotraChange(this)" style="font-weight: 600; cursor: pointer;">
+              <option value="">-- Select Gotra / गोत्र चुनें --</option>
+              <option value="Goyal (Goel)">1. Goyal (Goel)</option>
+              <option value="Garg">2. Garg</option>
+              <option value="Bansal">3. Bansal</option>
+              <option value="Jindal">4. Jindal</option>
+              <option value="Kansal">5. Kansal</option>
+              <option value="Mittal">6. Mittal</option>
+              <option value="Airan">7. Airan</option>
+              <option value="Bhandal">8. Bhandal</option>
+              <option value="Bindal">9. Bindal</option>
+              <option value="Dharan">10. Dharan</option>
+              <option value="Goyan (Gangal)">11. Goyan (Gangal)</option>
+              <option value="Kuchchal">12. Kuchchal</option>
+              <option value="Madhukul (Mudgal)">13. Madhukul (Mudgal)</option>
+              <option value="Mangal">14. Mangal</option>
+              <option value="Nangal (Nagal/Naagil)">15. Nangal (Nagal/ Naagil)</option>
+              <option value="Singhal (Singla)">16. Singhal (Singla)</option>
+              <option value="Tayal">17. Tayal</option>
+              <option value="Tingal (Tunghal)">18. Tingal (Tunghal)</option>
+              <option value="Mahajan">19. Mahajan</option>
+              <option value="Other">20. Other (अन्य)</option>
+            </select>
+            <div id="other-gotra-wrap" class="hidden" style="margin-top: 10px;">
+              <input type="text" id="otherGotra" class="form-input" placeholder="Please specify your Gotra / अपना गोत्र यहाँ लिखें">
+            </div>
           </div>
 
 
@@ -3543,7 +3584,7 @@
         'txt-step1-lbl': '1. Registration',
         'txt-step2-lbl': '2. Membership',
         'txt-sec1-title': 'Personal Details',
-        'lbl-name': 'Full Name',
+        'lbl-name': 'Full Name', 'lbl-first-name': 'First Name', 'lbl-middle-name': 'Middle Name', 'lbl-last-name': 'Last Name', 'lbl-gotra': 'Gotra (गोत्र)',
         'lbl-father': 'Father / Husband Name',
         'lbl-sex': 'Sex / Gender',
         'opt-male': 'Male',
@@ -3594,7 +3635,7 @@
         'txt-step1-lbl': '1. पंजीकरण',
         'txt-step2-lbl': '2. सदस्यता',
         'txt-sec1-title': 'व्यक्तिगत विवरण',
-        'lbl-name': 'पूरा नाम',
+        'lbl-name': 'पूरा नाम', 'lbl-first-name': 'पहला नाम', 'lbl-middle-name': 'मध्य नाम', 'lbl-last-name': 'उपनाम / सरनेम', 'lbl-gotra': 'गोत्र',
         'lbl-father': 'पिता / पति का नाम',
         'lbl-sex': 'लिंग',
         'opt-male': 'पुरुष',
@@ -3645,7 +3686,7 @@
         'txt-step1-lbl': '1. ਰਜਿਸਟ੍ਰੇਸ਼ਨ',
         'txt-step2-lbl': '2. ਮੈਂਬਰਸ਼ਿਪ',
         'txt-sec1-title': 'ਨਿੱਜੀ ਵੇਰਵੇ',
-        'lbl-name': 'ਪੂਰਾ ਨਾਮ',
+        'lbl-name': 'ਪੂਰਾ ਨਾਮ', 'lbl-first-name': 'ਪਹਿਲਾ ਨਾਮ', 'lbl-middle-name': 'ਵਿਚਕਾਰਲਾ ਨਾਮ', 'lbl-last-name': 'ਆਖਰੀ ਨਾਮ / ਉਪਨਾਮ', 'lbl-gotra': 'ਗੋਤਰ',
         'lbl-father': 'ਪਿਤਾ / ਪਤੀ ਦਾ ਨਾਮ',
         'lbl-sex': 'ਲਿੰਗ',
         'opt-male': 'ਪੁਰਸ਼',
@@ -3980,6 +4021,34 @@
     }
 
     // 5. STEPPER NAVIGATION: Step 1 -> Step 2
+    
+    function updateCalculatedFullName() {
+      const f = (document.getElementById('firstName') ? document.getElementById('firstName').value.trim() : '');
+      const m = (document.getElementById('middleName') ? document.getElementById('middleName').value.trim() : '');
+      const l = (document.getElementById('lastName') ? document.getElementById('lastName').value.trim() : '');
+      const computed = [f, m, l].filter(Boolean).join(' ');
+      const fullEl = document.getElementById('fullName');
+      if (fullEl) fullEl.value = computed;
+    }
+
+    function handleGotraChange(selectEl) {
+      const otherWrap = document.getElementById('other-gotra-wrap');
+      const otherInput = document.getElementById('otherGotra');
+      if (selectEl.value === 'Other') {
+        if (otherWrap) otherWrap.classList.remove('hidden');
+        if (otherInput) {
+          otherInput.required = true;
+          otherInput.focus();
+        }
+      } else {
+        if (otherWrap) otherWrap.classList.add('hidden');
+        if (otherInput) {
+          otherInput.required = false;
+          otherInput.value = '';
+        }
+      }
+    }
+
     function nextToStep2() {
       // Validate Required Fields in Step 1
       const fullName = (document.getElementById('fullName').value || '').trim();
@@ -3991,9 +4060,34 @@
       const pincode = document.getElementById('pincode') ? (document.getElementById('pincode').value || '').trim() : '';
       const profession = document.getElementById('profession') ? document.getElementById('profession').value : '';
 
-      if (!fullName) {
-        alert('Please enter Full Name (पूरा नाम दर्ज करें)');
-        document.getElementById('fullName').focus();
+            updateCalculatedFullName();
+      const firstName = (document.getElementById('firstName') ? document.getElementById('firstName').value.trim() : '');
+      const lastName = (document.getElementById('lastName') ? document.getElementById('lastName').value.trim() : '');
+      const gotraSelect = document.getElementById('gotra');
+      const gotraVal = gotraSelect ? gotraSelect.value : '';
+      const otherGotraVal = document.getElementById('otherGotra') ? document.getElementById('otherGotra').value.trim() : '';
+
+      if (!firstName) {
+        alert('Please enter First Name (पहला नाम)');
+        if (document.getElementById('firstName')) document.getElementById('firstName').focus();
+        return;
+      }
+
+      if (!lastName) {
+        alert('Please enter Last Name (उपनाम / सरनेम)');
+        if (document.getElementById('lastName')) document.getElementById('lastName').focus();
+        return;
+      }
+
+      if (!gotraVal) {
+        alert('Please select your Gotra (गोत्र चुनें)');
+        if (gotraSelect) gotraSelect.focus();
+        return;
+      }
+
+      if (gotraVal === 'Other' && !otherGotraVal) {
+        alert('Please specify your Gotra (अपना गोत्र लिखें)');
+        if (document.getElementById('otherGotra')) document.getElementById('otherGotra').focus();
         return;
       }
 
@@ -5478,7 +5572,19 @@
 
         language: currentLang,
 
-        fullName: document.getElementById('fullName').value.trim(),
+        fullName: (document.getElementById('fullName') ? document.getElementById('fullName').value.trim() : ''),
+
+        firstName: (document.getElementById('firstName') ? document.getElementById('firstName').value.trim() : ''),
+
+        middleName: (document.getElementById('middleName') ? document.getElementById('middleName').value.trim() : ''),
+
+        lastName: (document.getElementById('lastName') ? document.getElementById('lastName').value.trim() : ''),
+
+        gotra: (document.getElementById('gotra') && document.getElementById('gotra').value === 'Other')
+               ? (document.getElementById('otherGotra') ? document.getElementById('otherGotra').value.trim() : 'Other')
+               : (document.getElementById('gotra') ? document.getElementById('gotra').value : ''),
+
+        otherGotra: (document.getElementById('otherGotra') ? document.getElementById('otherGotra').value.trim() : ''),
 
         fatherHusbandName: document.getElementById('fatherHusbandName').value.trim(),
 

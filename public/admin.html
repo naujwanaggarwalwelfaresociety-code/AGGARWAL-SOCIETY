@@ -1590,12 +1590,13 @@
         return;
       }
 
-      const headers = ['Member ID', 'Receipt No', 'Full Name', 'Father/Husband Name', 'Gender', 'DOB', 'Age', 'Mobile No', 'WhatsApp No', 'Email', 'Constituency', 'Pincode', 'Address', 'Profession', 'Marital Status', 'Spouse Name', 'Amount Paid', 'Payment Method', 'Transaction Ref', 'Payment Status', 'Joining Date'];
+      const headers = ['Member ID', 'Receipt No', 'Full Name', 'Gotra', 'Father/Husband Name', 'Gender', 'DOB', 'Age', 'Mobile No', 'WhatsApp No', 'Email', 'Constituency', 'Pincode', 'Address', 'Profession', 'Marital Status', 'Spouse Name', 'Amount Paid', 'Payment Method', 'Transaction Ref', 'Payment Status', 'Joining Date'];
       
       const rows = allMembers.map(m => [
         m.memberId || '',
         m.receiptNo || '',
         `"${(m.fullName || '').replace(/"/g, '""')}"`,
+        `"${(m.gotra || '').replace(/"/g, '""')}"`,
         `"${(m.fatherHusbandName || '').replace(/"/g, '""')}"`,
         m.sex || '',
         m.dob || '',
