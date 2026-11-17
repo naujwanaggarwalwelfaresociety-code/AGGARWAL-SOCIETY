@@ -158,13 +158,16 @@ app.get('/api/admin/members', requireAdmin, async (req, res) => {
     const status = (req.query.status || '').trim();
     const constituency = (req.query.constituency || '').trim();
 
+    const isAllStatus = !status || status.toLowerCase() === 'all';
+    const isAllConstituency = !constituency || constituency.toLowerCase() === 'all';
+
     if (isMongoConnected) {
       const query = {};
-      if (status && status !== 'all') {
-        query.paymentStatus = status;
+      if (!isAllStatus) {
+        query.paymentStatus = { $regex: new RegExp('^' + status + '$', 'i') };
       }
-      if (constituency) {
-        query.constituency = constituency;
+      if (!isAllConstituency) {
+        query.constituency = { $regex: new RegExp('^' + constituency + '$', 'i') };
       }
       if (search) {
         const cleanDigits = search.replace(/\D/g, '');
@@ -198,10 +201,10 @@ app.get('/api/admin/members', requireAdmin, async (req, res) => {
     } else {
       // Local JSON File Mode
       let members = getLocalMembers();
-      if (status && status !== 'all') {
+      if (!isAllStatus) {
         members = members.filter(m => (m.paymentStatus || '').toLowerCase() === status.toLowerCase());
       }
-      if (constituency) {
+      if (!isAllConstituency) {
         members = members.filter(m => (m.constituency || '').toLowerCase() === constituency.toLowerCase());
       }
       if (search) {
