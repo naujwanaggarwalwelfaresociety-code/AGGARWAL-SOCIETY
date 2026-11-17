@@ -17,11 +17,34 @@ const PORT = process.env.PORT || 3000;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 const MONGODB_URI = process.env.MONGODB_URI;
 
-// Ensure local storage directory & file exist
+// Ensure local storage directory & file exist with initial seed data
 const DATA_DIR = path.join(__dirname, 'data');
 const LOCAL_DB_FILE = path.join(DATA_DIR, 'members.json');
+const SEED_FILE = path.join(DATA_DIR, 'initial_members.json');
+
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
-if (!fs.existsSync(LOCAL_DB_FILE)) fs.writeFileSync(LOCAL_DB_FILE, JSON.stringify([]), 'utf8');
+
+function initializeLocalStorage() {
+  try {
+    let needsSeed = false;
+    if (!fs.existsSync(LOCAL_DB_FILE)) {
+      needsSeed = true;
+    } else {
+      const content = fs.readFileSync(LOCAL_DB_FILE, 'utf8').trim();
+      if (!content || content === '[]') needsSeed = true;
+    }
+
+    if (needsSeed && fs.existsSync(SEED_FILE)) {
+      fs.copyFileSync(SEED_FILE, LOCAL_DB_FILE);
+      console.log('🌱 Populated initial members from seed data successfully.');
+    } else if (!fs.existsSync(LOCAL_DB_FILE)) {
+      fs.writeFileSync(LOCAL_DB_FILE, JSON.stringify([], null, 2), 'utf8');
+    }
+  } catch (err) {
+    console.warn('Storage init warning:', err.message);
+  }
+}
+initializeLocalStorage();
 
 let isMongoConnected = false;
 
